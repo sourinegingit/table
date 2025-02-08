@@ -57,8 +57,8 @@ function App() {
     setUsers(users.filter((user) => user.id !== id));
   };
 
-  const tableData = users.map((user) => ({
-    id: user.id,
+  const tableData = users.map((user, index) => ({
+    rowNumber: index + 1 + (currentPage - 1) * perPage, // Row number based on current page
     name: `${user.first_name} ${user.last_name}`,
     email: user.email,
     avatar: user.avatar,
@@ -73,7 +73,7 @@ function App() {
   }));
 
   const headers = [
-    { label: "ID", key: "id" },
+    { label: "ردیف", key: "rowNumber" }, // Updated header for row number
     { label: "Name", key: "name" },
     { label: "Email", key: "email" },
     { label: "Avatar", key: "avatar" },
