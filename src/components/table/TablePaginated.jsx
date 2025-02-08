@@ -26,7 +26,7 @@ const TablePaginated = ({
       ) : (
         <>
           <div className="overflow-x-auto">
-            <table className="w-full border border-gray-300 bg-white shadow-md rounded-lg">
+            <table className="min-w-full border border-gray-300 bg-white shadow-md rounded-lg">
               <thead>
                 <tr className="text-gray-700">
                   {headers.map((header, index) => (

@@ -16,7 +16,7 @@ export const fetchUsersPaginated = async (page = 1, perPage = 3) => {
 // دریافت همه داده‌ها (بدون صفحه‌بندی)
 export const fetchUsers = async () => {
   try {
-    const res = await axios.get(`${Base_Url}?per_page=100`); // دریافت تمام کاربران
+    const res = await axios.get(`${Base_Url}?per_page=8`); // دریافت تمام کاربران
     return res.data.data;
   } catch (error) {
     console.error("خطا در دریافت اطلاعات کاربران:", error);

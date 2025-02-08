@@ -12,6 +12,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [perPage, setPerPage] = useState(3);
+  const [filterRow, setFilterRow] = useState(""); // State to store filter input for row number
 
   useEffect(() => {
     const getUsers = async () => {
@@ -57,23 +58,28 @@ function App() {
     setUsers(users.filter((user) => user.id !== id));
   };
 
-  const tableData = users.map((user, index) => ({
-    rowNumber: index + 1 + (currentPage - 1) * perPage, // Row number based on current page
-    name: `${user.first_name} ${user.last_name}`,
-    email: user.email,
-    avatar: user.avatar,
-    actions: (
-      <button
-        onClick={() => handleDelete(user.id)}
-        className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition duration-300"
-      >
-        حذف
-      </button>
-    ),
-  }));
+  const tableData = users
+    .map((user, index) => ({
+      rowNumber: index + 1, // Add rowNumber as index + 1
+      id: user.id,
+      name: `${user.first_name} ${user.last_name}`,
+      email: user.email,
+      avatar: user.avatar,
+      actions: (
+        <button
+          onClick={() => handleDelete(user.id)}
+          className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition duration-300"
+        >
+          حذف
+        </button>
+      ),
+    }))
+    .filter((user) =>
+      filterRow ? user.rowNumber.toString().includes(filterRow) : true
+    ); // Filter based on row number
 
   const headers = [
-    { label: "ردیف", key: "rowNumber" }, // Updated header for row number
+    { label: "ردیف", key: "rowNumber" }, // Change label to "ردیف"
     { label: "Name", key: "name" },
     { label: "Email", key: "email" },
     { label: "Avatar", key: "avatar" },
@@ -102,6 +108,15 @@ function App() {
               <option value="10">10 کاربر در هر صفحه</option>
             </select>
           )}
+
+          {/* Filter for row number */}
+          <input
+            type="text"
+            value={filterRow}
+            onChange={(e) => setFilterRow(e.target.value)}
+            placeholder="فیلتر بر اساس ردیف"
+            className="px-4 py-2 border rounded-lg bg-white text-gray-700"
+          />
         </div>
 
         <Routes>
