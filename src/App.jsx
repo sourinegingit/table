@@ -12,7 +12,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [perPage, setPerPage] = useState(3);
-  const [filterRow, setFilterRow] = useState(""); // State to store filter input for row number
+  const [searchQuery, setSearchQuery] = useState(""); // For search input
 
   useEffect(() => {
     const getUsers = async () => {
@@ -58,6 +58,7 @@ function App() {
     setUsers(users.filter((user) => user.id !== id));
   };
 
+  // Filter the users based on the searchQuery
   const tableData = users
     .map((user, index) => ({
       rowNumber: index + 1, // Add rowNumber as index + 1
@@ -74,12 +75,15 @@ function App() {
         </button>
       ),
     }))
-    .filter((user) =>
-      filterRow ? user.rowNumber.toString().includes(filterRow) : true
-    ); // Filter based on row number
+    .filter((user) => {
+      return (
+        user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    });
 
   const headers = [
-    { label: "ردیف", key: "rowNumber" }, // Change label to "ردیف"
+    { label: "ردیف", key: "rowNumber" },
     { label: "Name", key: "name" },
     { label: "Email", key: "email" },
     { label: "Avatar", key: "avatar" },
@@ -109,12 +113,12 @@ function App() {
             </select>
           )}
 
-          {/* Filter for row number */}
+          {/* Unified search input */}
           <input
             type="text"
-            value={filterRow}
-            onChange={(e) => setFilterRow(e.target.value)}
-            placeholder="فیلتر بر اساس ردیف"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="جستجو بر اساس نام یا ایمیل"
             className="px-4 py-2 border rounded-lg bg-white text-gray-700"
           />
         </div>
@@ -135,7 +139,7 @@ function App() {
                   totalPages={totalPages}
                   handleNextPage={handleNextPage}
                   handlePrevPage={handlePrevPage}
-                  handlePageClick={handlePageClick} // Pass the page click handler
+                  handlePageClick={handlePageClick}
                 />
               ) : (
                 <TableComponent
