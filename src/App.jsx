@@ -61,7 +61,7 @@ function App() {
   // Filter the users based on the searchQuery
   const tableData = users
     .map((user, index) => ({
-      rowNumber: index + 1, // Add rowNumber as index + 1
+      rowNumber: index + 1 + (currentPage - 1) * perPage, // Row number based on current page
       id: user.id,
       name: `${user.first_name} ${user.last_name}`,
       email: user.email,
