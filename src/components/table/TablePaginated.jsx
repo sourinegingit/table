@@ -63,7 +63,11 @@ const TablePaginated = ({
               <button
                 onClick={handlePrevPage}
                 disabled={currentPage === 1}
-                className="px-4 py-2 mx-1 border rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+                className={`px-4 py-2 mx-1 border rounded-lg ${
+                  currentPage === 1
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-blue-500 text-white hover:bg-blue-600"
+                }`}
               >
                 قبلی
               </button>
@@ -86,7 +90,11 @@ const TablePaginated = ({
               <button
                 onClick={handleNextPage}
                 disabled={currentPage === totalPages}
-                className="px-4 py-2 mx-1 border rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+                className={`px-4 py-2 mx-1 border rounded-lg ${
+                  currentPage === totalPages
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-blue-500 text-white hover:bg-blue-600"
+                }`}
               >
                 بعدی
               </button>
