@@ -1,7 +1,12 @@
 import "./App.css";
+import TableComponent from "./components/table/Table";
 
 function App() {
-  return <h1 class="text-3xl font-bold underline">Hello world!</h1>;
+  return (
+    <div className="">
+      <TableComponent />
+    </div>
+  );
 }
 
 export default App;
