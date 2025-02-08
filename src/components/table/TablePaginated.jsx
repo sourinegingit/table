@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 const TablePaginated = ({
   headers,
@@ -7,17 +7,12 @@ const TablePaginated = ({
   error,
   isPaginated,
   itemsPerPage,
+  currentPage,
+  totalPages,
+  handleNextPage,
+  handlePrevPage,
+  handlePageClick, // Function to handle page number click
 }) => {
-  const [currentPage, setCurrentPage] = useState(1);
-
-  // محاسبه تعداد کل صفحات
-  const totalPages = Math.ceil(data.length / itemsPerPage);
-
-  // داده‌های صفحه فعلی
-  const paginatedData = isPaginated
-    ? data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-    : data;
-
   return (
     <div className="p-4 rounded-lg shadow-lg overflow-x-auto bg-white">
       <h2 className="text-center text-xl font-bold mb-4 text-gray-700">
@@ -42,7 +37,7 @@ const TablePaginated = ({
                 </tr>
               </thead>
               <tbody>
-                {paginatedData.map((item, index) => (
+                {data.map((item, index) => (
                   <tr key={index} className="text-center hover:bg-gray-100">
                     {headers.map((header) => (
                       <td key={header.key} className="py-3 px-4 border-b">
@@ -63,33 +58,35 @@ const TablePaginated = ({
             </table>
           </div>
 
-          {/* صفحه‌بندی */}
           {isPaginated && totalPages > 1 && (
             <div className="flex justify-center mt-4">
               <button
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                onClick={handlePrevPage}
                 disabled={currentPage === 1}
-                className={`px-4 py-2 mx-1 border rounded-lg ${
-                  currentPage === 1
-                    ? "bg-gray-300 cursor-not-allowed"
-                    : "bg-blue-500 text-white hover:bg-blue-600"
-                }`}
+                className="px-4 py-2 mx-1 border rounded-lg bg-blue-500 text-white hover:bg-blue-600"
               >
                 قبلی
               </button>
-              <span className="px-4 py-2">
-                {currentPage} از {totalPages}
-              </span>
+
+              {/* Display page numbers */}
+              {[...Array(totalPages)].map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => handlePageClick(index + 1)} // Pass the page number
+                  className={`px-4 py-2 mx-1 border rounded-lg ${
+                    currentPage === index + 1
+                      ? "bg-blue-600 text-white"
+                      : "bg-white text-blue-500"
+                  }`}
+                >
+                  {index + 1}
+                </button>
+              ))}
+
               <button
-                onClick={() =>
-                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                }
+                onClick={handleNextPage}
                 disabled={currentPage === totalPages}
-                className={`px-4 py-2 mx-1 border rounded-lg ${
-                  currentPage === totalPages
-                    ? "bg-gray-300 cursor-not-allowed"
-                    : "bg-blue-500 text-white hover:bg-blue-600"
-                }`}
+                className="px-4 py-2 mx-1 border rounded-lg bg-blue-500 text-white hover:bg-blue-600"
               >
                 بعدی
               </button>

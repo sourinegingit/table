@@ -1,28 +1,57 @@
 import React, { useState, useEffect } from "react";
-import { fetchUsers } from "./components/api/api";
 import TableComponent from "./components/table/Table";
 import TablePaginated from "./components/table/TablePaginated";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { fetchUsers, fetchUsersPaginated } from "./components/api/api";
 
 function App() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isPaginated, setIsPaginated] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [perPage, setPerPage] = useState(3);
 
   useEffect(() => {
     const getUsers = async () => {
       setLoading(true);
       try {
-        const userData = await fetchUsers();
-        console.log("داده‌های دریافت شده:", userData); // بررسی مقدار داده‌ها
-        setUsers(userData);
+        if (isPaginated) {
+          const { data, total_pages } = await fetchUsersPaginated(
+            currentPage,
+            perPage
+          );
+          setUsers(data);
+          setTotalPages(total_pages);
+        } else {
+          const allUsers = await fetchUsers();
+          setUsers(allUsers);
+          setTotalPages(1); // No pagination in this case
+        }
       } catch (error) {
-        setError("خطا در دریافت اطلاعات کاربر");
+        setError("خطا در دریافت اطلاعات کاربران");
       }
       setLoading(false);
     };
     getUsers();
-  }, []);
+  }, [isPaginated, currentPage, perPage]);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage((prev) => prev + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prev) => prev - 1);
+    }
+  };
+
+  const handlePageClick = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   const handleDelete = (id) => {
     setUsers(users.filter((user) => user.id !== id));
@@ -54,30 +83,53 @@ function App() {
   return (
     <Router>
       <div className="min-h-screen flex flex-col items-center bg-gray-200 p-6">
-        {/* مسیرها */}
+        <div className="mb-4 flex items-center space-x-4">
+          <button
+            onClick={() => setIsPaginated(!isPaginated)}
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300"
+          >
+            {isPaginated ? "نمایش همه کاربران" : "فعال‌سازی صفحه‌بندی"}
+          </button>
+
+          {isPaginated && (
+            <select
+              value={perPage}
+              onChange={(e) => setPerPage(Number(e.target.value))}
+              className="px-3 py-2 border rounded-lg bg-white text-gray-700"
+            >
+              <option value="3">3 کاربر در هر صفحه</option>
+              <option value="5">5 کاربر در هر صفحه</option>
+              <option value="10">10 کاربر در هر صفحه</option>
+            </select>
+          )}
+        </div>
+
         <Routes>
           <Route
             path="/"
             element={
-              <TableComponent
-                headers={headers}
-                data={tableData}
-                loading={loading}
-                error={error}
-              />
-            }
-          />
-          <Route
-            path="/page"
-            element={
-              <TablePaginated
-                headers={headers}
-                data={tableData}
-                loading={loading}
-                error={error}
-                isPaginated={true}
-                itemsPerPage={4}
-              />
+              isPaginated ? (
+                <TablePaginated
+                  headers={headers}
+                  data={tableData}
+                  loading={loading}
+                  error={error}
+                  isPaginated={true}
+                  itemsPerPage={perPage}
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  handleNextPage={handleNextPage}
+                  handlePrevPage={handlePrevPage}
+                  handlePageClick={handlePageClick} // Pass the page click handler
+                />
+              ) : (
+                <TableComponent
+                  headers={headers}
+                  data={tableData}
+                  loading={loading}
+                  error={error}
+                />
+              )
             }
           />
         </Routes>
