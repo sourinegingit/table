@@ -3,9 +3,7 @@ import { Base_Url } from "./base";
 
 export const fetchUsers = async () => {
   try {
-    const res = await axios.get(Base_Url);
-    console.log(res.data.data);
-
+    const res = await axios.get(`${Base_Url}?page=1`);
     return res.data.data;
   } catch (error) {
     console.error("خطا در دریافت اطلاعات کاربران:", error);

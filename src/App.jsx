@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
-import TableComponent from "./components/table/Table";
+import React, { useState, useEffect } from "react";
 import { fetchUsers } from "./components/api/api";
+import TableComponent from "./components/table/Table";
+import TablePaginated from "./components/table/TablePaginated";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 function App() {
   const [users, setUsers] = useState([]);
@@ -12,6 +14,7 @@ function App() {
       setLoading(true);
       try {
         const userData = await fetchUsers();
+        console.log("داده‌های دریافت شده:", userData); // بررسی مقدار داده‌ها
         setUsers(userData);
       } catch (error) {
         setError("خطا در دریافت اطلاعات کاربر");
@@ -21,12 +24,10 @@ function App() {
     getUsers();
   }, []);
 
-  // تابع حذف کاربر
   const handleDelete = (id) => {
     setUsers(users.filter((user) => user.id !== id));
   };
 
-  // داده‌های جدول را به آبجکت تبدیل می‌کنیم
   const tableData = users.map((user) => ({
     id: user.id,
     name: `${user.first_name} ${user.last_name}`,
@@ -42,7 +43,6 @@ function App() {
     ),
   }));
 
-  // هدرهای جدول
   const headers = [
     { label: "ID", key: "id" },
     { label: "Name", key: "name" },
@@ -52,16 +52,37 @@ function App() {
   ];
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gray-400 p-4">
-      <div className="w-full max-w-4xl p-6 bg-gray-300 rounded-lg shadow-lg">
-        <TableComponent
-          headers={headers}
-          data={tableData} // ارسال داده به صورت آرایه‌ای از آبجکت‌ها
-          loading={loading}
-          error={error}
-        />
+    <Router>
+      <div className="min-h-screen flex flex-col items-center bg-gray-200 p-6">
+        {/* مسیرها */}
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <TableComponent
+                headers={headers}
+                data={tableData}
+                loading={loading}
+                error={error}
+              />
+            }
+          />
+          <Route
+            path="/page"
+            element={
+              <TablePaginated
+                headers={headers}
+                data={tableData}
+                loading={loading}
+                error={error}
+                isPaginated={true}
+                itemsPerPage={4}
+              />
+            }
+          />
+        </Routes>
       </div>
-    </div>
+    </Router>
   );
 }
 

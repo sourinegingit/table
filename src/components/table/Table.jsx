@@ -2,7 +2,7 @@ import React from "react";
 
 const TableComponent = ({ headers, data, loading, error }) => {
   return (
-    <div className="p-4 bg-gray-200 rounded-lg shadow-lg overflow-x-auto">
+    <div className="p-4  rounded-lg shadow-lg overflow-x-auto border-2">
       <h2 className="text-center text-xl font-bold mb-4 text-gray-700">
         لیست کاربران
       </h2>
@@ -12,10 +12,10 @@ const TableComponent = ({ headers, data, loading, error }) => {
       ) : error ? (
         <p className="text-center text-red-500">{error}</p>
       ) : (
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto ">
           <table className="w-full border border-gray-300 bg-white shadow-md rounded-lg">
             <thead>
-              <tr className="bg-gray-300 text-gray-700">
+              <tr className=" text-gray-700">
                 {headers.map((header, index) => (
                   <th key={index} className="py-3 px-4 border-b text-center">
                     {header.label}
@@ -27,7 +27,7 @@ const TableComponent = ({ headers, data, loading, error }) => {
               {data.map((item, index) => (
                 <tr key={index} className="text-center hover:bg-gray-100">
                   {headers.map((header) => (
-                    <td key={header.key} className="py-3 px-4 border-b">
+                    <td key={header.key} className="py-3 px-4 ">
                       {/* نمایش آواتار */}
                       {header.key === "avatar" ? (
                         <img
